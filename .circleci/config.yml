@@ -20,11 +20,11 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          command: 'docker build -t somethingabout/cats .'
+          command: 'docker build -t "example/somethingaboutcats:latest" .'
           name: build container
       - anchore/analyze_local_image:
           dockerfile_path: ./Dockerfile
-          image_name: 'somethingabout/cats'
+          image_name: 'example/somethingaboutcats:latest'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           policy_failure: true
           timeout: '500'
@@ -35,9 +35,7 @@ workflows:
   completeflow:
     jobs:
       - one
-      - anchore/image_scan:
-          image_name: somethingabout/cats
-          timeout: '300'
+      - local_image_scan
           requires:
             - one
 
