@@ -35,7 +35,7 @@ workflows:
   completeflow:
     jobs:
       - one
-      - entur/owasp_dependency_check
+      - entur/owasp_dependency_check:
           requires:
             - one
       - local_image_scan:
