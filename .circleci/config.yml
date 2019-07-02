@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 orbs:
   anchore-engine: anchore/anchore-engine@1.0.0
 jobs:
@@ -33,7 +33,6 @@ jobs:
             echo "Nope!"; exit 1
           fi
 workflows:
-  version: 2
   scan_image:
     jobs:
       - anchore/image_scan:
