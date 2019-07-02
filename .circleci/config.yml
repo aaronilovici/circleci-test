@@ -36,8 +36,6 @@ workflows:
     jobs:
       - one
       - local_image_scan
-          requires:
-            - one
 
 
 
