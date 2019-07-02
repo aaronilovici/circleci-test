@@ -1,46 +1,67 @@
-version: 2.1
-orbs:
-  anchore: anchore/anchore-engine@1.0.0
+#version: 2.1
+#orbs:
+#  anchore: anchore/anchore-engine@1.0.0
+#jobs:
+#  one:
+#    docker:
+#      - image: circleci/ruby:2.4.1
+#    steps:
+#      - checkout
+#      - run: echo "A first hello"
+#      - run: mkdir -p my_workspace
+#      - run: echo "Trying out workspaces" > my_workspace/echo-output
+#      - persist_to_workspace:
+#          # Must be an absolute path, or relative path from working_directory
+#          root: my_workspace
+#          # Must be relative path from root
+#          paths:
+#            - echo-output      
+#  two:
+#    docker:
+#      - image: circleci/ruby:2.4.1
+#    steps:
+#      - checkout
+#      - run: echo "A more familiar hi"  
+#      - attach_workspace:
+#          # Must be absolute path or relative path from working_directory
+#          at: my_workspace
+#
+#      - run: |
+#          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then
+#            echo "It worked!";
+#          else
+#            echo "Nope!"; exit 1
+#          fi
+#workflows:
+#  scan_image:
+#    jobs:
+#      - anchore/image_scan:
+#          image_name: anchore/anchore-engine:latest
+#          timeout: '300'
+#  one_and_two:
+#    jobs:
+#      - one
+#      - two:
+#          requires:
+#            - one
 jobs:
-  one:
-    docker:
-      - image: circleci/ruby:2.4.1
+  local_image_scan:
+    executor: anchore/anchore_engine
     steps:
+      - setup_remote_docker
       - checkout
-      - run: echo "A first hello"
-      - run: mkdir -p my_workspace
-      - run: echo "Trying out workspaces" > my_workspace/echo-output
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
-          root: my_workspace
-          # Must be relative path from root
-          paths:
-            - echo-output      
-  two:
-    docker:
-      - image: circleci/ruby:2.4.1
-    steps:
-      - checkout
-      - run: echo "A more familiar hi"  
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: my_workspace
-
-      - run: |
-          if [[ $(cat my_workspace/echo-output) == "Trying out workspaces" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
-workflows:
-  scan_image:
-    jobs:
-      - anchore/image_scan:
-          image_name: anchore/anchore-engine:latest
-          timeout: '300'
-  one_and_two:
-    jobs:
-      - one
-      - two:
-          requires:
-            - one
+      - run:
+          command: 'docker build -t "example/test:latest" .'
+          name: build container
+      - anchore/analyze_local_image:
+          dockerfile_path: ./Dockerfile
+          image_name: 'example/test:latest'
+          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+          policy_failure: true
+          timeout: '500'
+      - anchore/parse_reports
+      - store_artifacts:
+          path: anchore-reports
+orbs:
+  anchore: anchore/anchore-engine@1.4.0
+version: 2.1
