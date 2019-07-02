@@ -35,7 +35,9 @@ workflows:
   completeflow:
     jobs:
       - one
-      - local_image_scan
+      - local_image_scan:
+          requires:
+            - one
 
 
 
