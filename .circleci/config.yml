@@ -1,16 +1,15 @@
 version: 2.1
 orbs:
   anchore: anchore/anchore-engine@1.4.0
-  owasp: entur/owasp@0.0.2
 jobs:
   one:
     docker:
       - image: circleci/ruby:2.4.1
     steps:
       - checkout
-      - run: echo "A first hello"
+      - run: echo "HELLO"
       - run: mkdir -p my_workspace
-      - run: echo "Trying out workspaces" > my_workspace/echo-output
+      - run: echo "THIS IS A TEST" > my_workspace/echo-output
       - persist_to_workspace:
           root: my_workspace
           paths:
@@ -36,12 +35,9 @@ workflows:
   completeflow:
     jobs:
       - one
-      - owasp_dependency_check:
+      - local_image_scan:
           requires:
             - one
- #     - local_image_scan:
- #         requires:
- #           - one
 
 
 
