@@ -20,11 +20,11 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          command: 'docker build -t mynginx_image1 .'
+          command: 'docker build -t somethingabout/cats .'
           name: build container
       - anchore/analyze_local_image:
           dockerfile_path: ./Dockerfile
-          image_name: 'mynginx_image1'
+          image_name: 'somethingabout/cats'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           policy_failure: true
           timeout: '500'
@@ -36,8 +36,10 @@ workflows:
     jobs:
       - one
       - anchore/image_scan:
-          image_name: mynginx_image1
+          image_name: somethingabout/cats
           timeout: '300'
+          requires:
+            - one
 
 
 
