@@ -37,8 +37,8 @@ workflows:
     jobs:
       - one
       - owasp_dependency_check:
-        requires:
-          - one
+          requires:
+            - one
  #     - local_image_scan:
  #         requires:
  #           - one
