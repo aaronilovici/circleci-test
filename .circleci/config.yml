@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   anchore: anchore/anchore-engine@1.4.0
+  owasp: entur/owasp@0.0.2
 jobs:
   one:
     docker:
@@ -35,9 +36,12 @@ workflows:
   completeflow:
     jobs:
       - one
-      - local_image_scan:
-          requires:
-            - one
+      - owasp_dependency_check:
+        requires:
+          - one
+ #     - local_image_scan:
+ #         requires:
+ #           - one
 
 
 
