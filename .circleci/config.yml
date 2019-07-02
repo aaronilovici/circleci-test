@@ -20,11 +20,11 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          command: 'docker build -t "example/somethingaboutcats:latest" .'
+          command: 'docker build -t "localhost:5000/somethingaboutcats:latest" .'
           name: build container
       - anchore/analyze_local_image:
           dockerfile_path: ./Dockerfile
-          image_name: 'example/somethingaboutcats:latest'
+          image_name: 'localhost:5000/somethingaboutcats:latest'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           policy_failure: true
           timeout: '500'
