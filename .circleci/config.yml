@@ -51,8 +51,8 @@ workflows:
     jobs:
       - one
       - two:
-        requires:
-          - one
+          requires:
+            - one
       - owasp/owasp_dependency_check:
           requires:
             - two
